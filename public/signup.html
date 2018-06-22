@@ -2,7 +2,7 @@
 <html lang=en>
     <head>
         <meta charset=UTF-8>
-        <meta name=viewport content="width=device-width, initial-scale=1">
+        <meta name=viewport content="width=device-width, initial-scale=1, minimum-scale=1">
         <meta name=description content="LogIt Signup">
         <title>Sign Up</title>
         <style>
@@ -10,14 +10,6 @@
                 font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
                 background-color: #000066;
             }
-         /*   .content {
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translateX(-50%) translateY(-50%);
-                margin: 5% auto 15% auto;
-                width: 80%;
-            }*/
             .content {
                 margin: 1% auto 5% auto;
                 width: 95%;
@@ -130,10 +122,10 @@
             <input type=text id=email name=email placeholder='Enter your email' required><br>
     
             <label for=password>Password</label>
-            <input type=text id=password name=password placeholder='Create a password' required><br>
+            <input type=password id=password name=password placeholder='Create a password' required><br>
     
             <label for=confirm>Reenter Password</label>
-            <input type=text id=confirm name=confirm placeholder='Reenter your password' required><br>
+            <input type=password id=confirm name=confirm placeholder='Reenter your password' required><br>
         
             <button id=signup>Create Account</button>
             <div id=bottomText>Already have an account? <a href=index.html>Log in</a></div>

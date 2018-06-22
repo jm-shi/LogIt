@@ -3,12 +3,103 @@
 <html lang=en>
     <head>
         <meta charset=UTF-8>
+        <meta name=viewport content="width=device-width, initial-scale=1, minimum-scale=1">
+        <meta name=description content="LogIt Home">
         <title>Home</title>
+        <style>
+            * {
+                font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+                margin: 0;
+                padding: 0;
+            }
+            .topnav {
+                position: relative;
+                background-color: #000066;
+                height: 60px;
+                overflow: hidden;
+            }
+            .topnav a {
+                float: left;
+                color: #fff;
+                font-size: 20px;
+                display: block;
+            }
+            #taskbtn {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                right: 10px;
+                padding: 10px;
+                font-size: 20px;
+                background-color: #fff;
+                -webkit-appearance: none;
+                -webkit-border-radius: 0;
+            }
+
+            #sidebar {
+                height: 100%;
+                width: 100%;
+                position: fixed;
+                background-color: #111c31;
+                font-size: 2em;
+                margin-right: 200px;
+               
+                left: -100%;
+                transition: 0.1s linear;
+                opacity: 0.95;
+            }
+            #sidebar.active {
+                left: 0px;
+            }
+            #sidebar ul li {
+                color: #afafaf;
+                list-style: none;
+                padding: 15px 50px 15px 15px;
+            }
+            #sidebar ul li:hover {
+                color: #fff;
+            }
+            #hamburger {
+                position: absolute;
+                padding: 15px 20px;
+            }
+            #hamburger span {
+                display: block;
+                width: 30px;
+                height: 3px;
+                background-color: #fff;
+                margin: 5px 0px;
+            }
+
+        </style>
     </head>
     <body>
+
+        <div class=topnav>
+            <div id=hamburger onclick=toggleSidebar();>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <button id=taskbtn>Create Task</button>
+        </div>
+
+        <div id=sidebar>
+            <ul>
+                <li>Todo</li>
+                <li>Completed</li>
+                <li id=signout>Logout</li>
+            </ul>
+        </div>
+
         <h1>Home page</h1>
-        <button id=signout>Sign Out</button>
         
+        <script>
+            function toggleSidebar() {
+                document.getElementById('sidebar').classList.toggle('active');
+            }
+        </script>
+
         <script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-app.js"></script>
         <script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-auth.js"></script>
         <script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-firestore.js"></script>
