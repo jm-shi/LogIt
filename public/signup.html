@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang=en>
+    <head>
+        <meta charset=UTF-8>
+        <meta name=viewport content="width=device-width, initial-scale=1">
+        <meta name=description content="LogIt Signup">
+        <title>Sign Up</title>
+        <style>
+            body {
+                font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+                background-color: #000066;
+            }
+         /*   .content {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translateX(-50%) translateY(-50%);
+                margin: 5% auto 15% auto;
+                width: 80%;
+            }*/
+            .content {
+                margin: 1% auto 5% auto;
+                width: 95%;
+            }
+
+            .container {
+                background-color: #fff;
+            }
+            h1 {
+                text-align: center;
+                font-size: 4em;
+                padding-top: 5%;
+                margin-left: 1%;
+            }
+            label {
+                font-size: 2em;
+                margin-left: 2.5%;
+                font-weight: bold;
+            }
+            input {
+                display: block;
+                width: 95%;
+                margin-left: 2.5%;
+                box-sizing: border-box;
+                -moz-box-sizing: border-box;
+                background: #f1f1f1;
+                border: none;
+                font-size: 1.8em;
+                padding: 10px;
+            }
+            input:focus {
+                background-color: #ddd;
+                outline: none;
+            }
+            #signup {
+                text-align: center;
+                background-color: #16C3C8;
+                border: none;
+                width: 95%;
+                margin-left: 2.5%;
+                margin-right: 2.5%;
+                margin-bottom: 2.5%;
+                padding: 5px;
+                font-size: 2em;
+            }
+            #signup:hover {
+                background-color: #0AACB1;
+            }
+            #bottomText {
+                text-align: center;
+                font-size: 1.1em;
+                padding-bottom: 1em;
+            }
+            #bottomText a {
+                color: blue;
+                text-decoration: none;
+            }
+            #bottomText a:hover {
+                text-decoration: underline;
+            }
+        </style>
+        <script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-auth.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-firestore.js"></script>
+        <script>
+          var config = {
+            apiKey: "AIzaSyD_BUKEpF5nKmVSh_Dxw1Wpa_UOdBZh-oQ",
+            authDomain: "logitcalendar.firebaseapp.com",
+            databaseURL: "https://logitcalendar.firebaseio.com",
+            projectId: "logitcalendar",
+            storageBucket: "logitcalendar.appspot.com",
+            messagingSenderId: "843432594890"
+          };
+          firebase.initializeApp(config);
+          var database = firebase.firestore();
+
+          window.onload = function() {
+            document.getElementById("signup").addEventListener("click", createAccount);
+          }
+
+          function createAccount() {
+            var email = document.getElementById("email").value;
+            var password = document.getElementById("password").value;
+            var confirm = document.getElementById("confirm").value;
+            if (password === confirm) {
+                firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+                    window.alert(error.message); 
+                });
+            }
+            else {
+                window.alert("The passwords do not match.");
+            }
+          }
+
+          firebase.auth().onAuthStateChanged(function(user) {
+              if (user) {
+                  window.location.href="home.html";
+              }
+          });
+        </script>
+
+    </head>
+
+    <body>
+        <div class=content>
+            <div class=container>
+            <h1>Sign Up</h1>
+            
+            <label for=email>Email</label>
+            <input type=text id=email name=email placeholder='Enter your email' required><br>
+    
+            <label for=password>Password</label>
+            <input type=text id=password name=password placeholder='Create a password' required><br>
+    
+            <label for=confirm>Reenter Password</label>
+            <input type=text id=confirm name=confirm placeholder='Reenter your password' required><br>
+        
+            <button id=signup>Create Account</button>
+            <div id=bottomText>Already have an account? <a href=index.html>Log in</a></div>
+
+            </div>
+        </div>
+    </body>
+
+</html>
