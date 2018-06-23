@@ -74,41 +74,71 @@
         <script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-app.js"></script>
         <script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-auth.js"></script>
         <script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-firestore.js"></script>
+        <script src="app.js"></script>
+
         <script>
-          var config = {
-            apiKey: "AIzaSyD_BUKEpF5nKmVSh_Dxw1Wpa_UOdBZh-oQ",
-            authDomain: "logitcalendar.firebaseapp.com",
-            databaseURL: "https://logitcalendar.firebaseio.com",
-            projectId: "logitcalendar",
-            storageBucket: "logitcalendar.appspot.com",
-            messagingSenderId: "843432594890"
-          };
-          firebase.initializeApp(config);
           var database = firebase.firestore();
 
           window.onload = function() {
             document.getElementById("signup").addEventListener("click", createAccount);
           }
 
-          function createAccount() {
+        function addToDatabase(user, email) {
+          /*  database.collection("users").doc(email).collection("tasks").doc("ASD").set({
+                test: "testing"
+            })*/
+
+            database.collection("users").doc(user.uid).set({
+                email: email
+            }).then(function() {
+                window.location.href = "home.html";
+            });
+        }
+
+        function createAccount() {
             var email = document.getElementById("email").value;
             var password = document.getElementById("password").value;
             var confirm = document.getElementById("confirm").value;
+
+       /*     var user = firebase.auth().currentUser;*/
+
             if (password === confirm) {
-                firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+                firebase.auth().createUserWithEmailAndPassword(email, password)
+                .then(function() {
+                    firebase.auth().onAuthStateChanged(function(user) {
+                        if (user) {
+                            addToDatabase(user, email);
+                        }
+                    });
+                })
+                .catch(function(error) {
                     window.alert(error.message); 
                 });
             }
             else {
                 window.alert("The passwords do not match.");
             }
-          }
+        }
 
-          firebase.auth().onAuthStateChanged(function(user) {
-              if (user) {
-                  window.location.href="home.html";
-              }
-          });
+
+
+       /* firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+            
+             /*   database.collection("users").doc("asdf").set({
+                    test: "testing"
+                })
+                .then(function() {
+                    alert("Success");
+                })
+                .catch(function(error) {
+                    alert("Error writing doucment: ", error);
+                }); 
+
+                window.location.href="home.html";
+            }
+        });*/
+
         </script>
 
     </head>
@@ -119,13 +149,13 @@
             <h1>Sign Up</h1>
             
             <label for=email>Email</label>
-            <input type=text id=email name=email placeholder='Enter your email' required><br>
+            <input type=text id=email name=email placeholder="Enter your email" required><br>
     
             <label for=password>Password</label>
-            <input type=password id=password name=password placeholder='Create a password' required><br>
+            <input type=password id=password name=password placeholder="Create a password" required><br>
     
-            <label for=confirm>Reenter Password</label>
-            <input type=password id=confirm name=confirm placeholder='Reenter your password' required><br>
+            <label for=confirm>Confirm Password</label>
+            <input type=password id=confirm name=confirm placeholder="Confirm your password" required><br>
         
             <button id=signup>Create Account</button>
             <div id=bottomText>Already have an account? <a href=index.html>Log in</a></div>
@@ -135,3 +165,4 @@
     </body>
 
 </html>
+

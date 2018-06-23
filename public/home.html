@@ -18,12 +18,6 @@
                 height: 60px;
                 overflow: hidden;
             }
-            .topnav a {
-                float: left;
-                color: #fff;
-                font-size: 20px;
-                display: block;
-            }
             #taskbtn {
                 position: absolute;
                 top: 50%;
@@ -35,7 +29,6 @@
                 -webkit-appearance: none;
                 -webkit-border-radius: 0;
             }
-
             #sidebar {
                 height: 100%;
                 width: 100%;
@@ -96,28 +89,21 @@
         
         <script>
             function toggleSidebar() {
-                document.getElementById('sidebar').classList.toggle('active');
+                document.getElementById("sidebar").classList.toggle("active");
             }
         </script>
 
         <script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-app.js"></script>
         <script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-auth.js"></script>
         <script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-firestore.js"></script>
+        <script src="app.js"></script>
 
         <script>
-            var config = {
-                apiKey: "AIzaSyD_BUKEpF5nKmVSh_Dxw1Wpa_UOdBZh-oQ",
-                authDomain: "logitcalendar.firebaseapp.com",
-                databaseURL: "https://logitcalendar.firebaseio.com",
-                projectId: "logitcalendar",
-                storageBucket: "logitcalendar.appspot.com",
-                messagingSenderId: "843432594890"
-            };
-            firebase.initializeApp(config);
             var database = firebase.firestore();
 
             window.onload = function() {
                 document.getElementById("signout").addEventListener("click", logout);
+                document.getElementById("taskbtn").addEventListener("click", createTask);
             }
 
             function logout() {
@@ -126,6 +112,10 @@
                 }).catch(function(error) {
                     alert(error);
                 });
+            }
+
+            function createTask() {
+                window.location.href = "createTask.html";
             }
 
         </script>

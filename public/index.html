@@ -10,7 +10,7 @@
         <link rel="canonical" href="index.html">
 
         <style>
-            body {
+            * {
                 font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
             }
             h1 {
@@ -73,19 +73,9 @@
         <script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-app.js"></script>
         <script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-auth.js"></script>
         <script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-firestore.js"></script>
-        <script>
+        <script src="app.js"></script>
 
-          var config = {
-            apiKey: "AIzaSyD_BUKEpF5nKmVSh_Dxw1Wpa_UOdBZh-oQ",
-            authDomain: "logitcalendar.firebaseapp.com",
-            databaseURL: "https://logitcalendar.firebaseio.com",
-            projectId: "logitcalendar",
-            storageBucket: "logitcalendar.appspot.com",
-            messagingSenderId: "843432594890"
-          };
-          firebase.initializeApp(config);
-
-          
+        <script>          
           window.onload = function() {
             document.getElementById("signin").addEventListener("click", login);
           }
