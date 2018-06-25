@@ -1,0 +1,38 @@
+label {
+    font-size: 2em;
+    margin-left: 2.5%;
+    font-weight: bold;
+}
+input, textarea {
+    display: block;
+    width: 95%;
+    margin-left: 2.5%;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    background: #f1f1f1;
+    border: none;
+    font-size: 1.8em;
+    padding: 10px;
+}
+input:focus {
+    background-color: #ddd;
+    outline: none;
+}
+textarea {
+    height: 5em;
+    min-width: 95%;
+    max-width: 95%;
+}
+#revise {
+    width: 100%;
+    font-size: 2em;
+    font-weight: bold;
+    padding: 10px;            
+    background-color: #a3a8c2;
+    -webkit-appearance: none;
+    -webkit-border-radius: 0;
+}
+#revise:hover {
+    background-color: #000066;
+    color: #fff;
+}

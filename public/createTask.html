@@ -78,8 +78,11 @@
             <input type=text id=title name=title placeholder='Enter a title'><br>
         
             <label for=date>Date</label>
-            <input type=datetime-local id=date name=date placeholder='Enter a date'><br>
+            <input type=date id=date name=date placeholder='Enter a date'><br>
         
+            <label for=date>Time</label>
+            <input type=time id=time name=time placeholder='Enter a time'><br>
+
             <label for=description>Description</label>
             <textarea id=description name=description placeholder='Enter a description'></textarea><br>
         </div>
@@ -102,7 +105,9 @@
             document.getElementById("createbtn").addEventListener("click", function() {
                 var title = document.getElementById("title").value;
                 var date = document.getElementById("date").value;
+                var time = document.getElementById("time").value;
                 var description = document.getElementById("description").value;
+
                 if (title === "") {
                     alert("Please enter a title.");
                     return;
@@ -111,8 +116,12 @@
                     alert("Please enter a date.");
                     return;
                 }
+                if (time === "") {
+                    alert("Please enter a time.");
+                    return;
+                }
 
-                var timestamp = Date.parse(date)/1000;
+                var timestamp = Date.parse(date + " " + time)/1000;
                 if (timestamp === undefined || timestamp === "") timestamp = 0;
 
                 var user = firebase.auth().currentUser;
@@ -120,6 +129,7 @@
                 database.collection("users").doc(user.uid).collection("todo").doc().set({
                     title: title,
                     date: date,
+                    time: time,
                     description: description,
                     timestamp: timestamp
                 }).then(function() {

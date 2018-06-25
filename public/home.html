@@ -12,6 +12,9 @@
                 margin: 0;
                 padding: 0;
             }
+            html {
+                background-color: #e0e2eb;
+            }
             h1 {
                 text-align: center;
                 font-size: 2em;
@@ -71,11 +74,12 @@
             #list li {
                 padding: 15px;
                 font-size:1.5em;
-                background-color: #a3a8c2;
+                background-color: #e0e2eb; /* #a3a8c2; */
+                border-bottom: solid 1px #a3a8c2;
             }
-            #list li:nth-child(odd) {
+          /*  #list li:nth-child(odd) {
                 background-color: #e0e2eb;
-            }
+            }*/
             .task {
                 padding: 10px;
                 font-size: 20px;
@@ -91,9 +95,55 @@
             .done {
                 background-color: #1E9912;
             }
+            .close {
+                float: right;
+                font-size: 1em;
+            }
+            .close:hover {
+                cursor: pointer;
+            }
+            #modal {
+                display: none;
+                position: fixed;
+                z-index: 1;
+                width: 100%;
+                height: 100%;
+                background-color: #000;
+                opacity: 0.95;
+                overflow: auto;
+            }
+            .modal-header {
+                text-align: center;
+                font-size: 2em;
+                font-weight: bold;
+                background-color: #a3a8c2;
+                box-sizing: border-box;
+                -moz-box-sizing: border-box;
+                padding: 5%;
+                margin: 5% auto;
+                width: 100%;
+            }
+            .modal-content {
+                background-color: #fff;
+                margin: 5% auto;
+                width: 80%;
+            }
+            .modal-list {
+                list-style-type: none;
+            }
         </style>
+        <link rel="stylesheet" type="text/css" href="form.css">
     </head>
     <body>
+
+        <div id="modal">
+            <div class="modal-content">
+                <div class="modal-header">Edit Task<span class="close">&times;</span></div>
+                
+                <ul class=modal-list>
+                </ul>
+            </div>
+        </div>
 
         <div class=topnav>
             <div id=hamburger>
@@ -138,10 +188,10 @@
                             console.log("Title: " + doc.data().title);
                             console.log("Timestamp: " + doc.data().timestamp);*/
                             
-                            var date = doc.data().date; //new Date(doc.data().date);
-                            if (date) {
-                                //date = getDateString(date);
-                            }
+                            var date = doc.data().date + " " + doc.data().time; //+ doc.data().time; //new Date(doc.data().date);
+                          //  if (date) {
+                           //     date = getDateString(new Date(date));
+                         //   }
                             
                             var task = `<li id=${doc.id}>` + "<span style='float:left; font-weight: bold'>" + doc.data().title + "</span><span style='float:right'>"  
                                 + `<button id='edit_${doc.id}' class='task edit' onclick='editTask(this.id)'>Edit</button>`  
@@ -184,13 +234,9 @@
                 document.getElementById("signout").addEventListener("click", logout);
                 document.getElementById("createbtn").addEventListener("click", createTask);
                 document.getElementById("hamburger").addEventListener("click", toggleSidebar);
-                document.getElementById("completed").addEventListener("click", viewCompleted)
-
-
-                /*var doneButtons = document.getElementsByClassName("done");
-                for (var i=0; i<doneButtons.length; i++) {
-                    doneButtons[i].addEventListener("click", completeTask);
-                }*/
+                document.getElementById("completed").addEventListener("click", viewCompleted);
+                document.getElementsByClassName("close")[0].addEventListener("click", close);
+                window.addEventListener("click", closeOutside);
             }
 
             function logout() {
@@ -213,11 +259,79 @@
                 window.location.href = "completed.html";
             }
 
-            function editTask(clickedID) {
-                var userID = firebase.auth().currentUser.uid;
+            function close() {
+                document.getElementById("modal").style.display = "none";
+            }
+
+            function closeOutside(e) {
+                if (e.target === modal) {
+                    document.getElementById("modal").style.display = "none";
+                }
+            }
+
+            function revise(taskID) {
+                var title = document.getElementById("title").value;
+                var date = document.getElementById("date").value;
+                var time = document.getElementById("time").value;
+                var description = document.getElementById("description").value;
                 
-                console.log("userID is " + userID);
-                console.log(clickedID);
+                if (title === "") {
+                    alert("Please enter a title.");
+                    return;
+                }
+                if (date === "") {
+                    alert("Please enter a date.");
+                    return;
+                }
+                if (time === "") {
+                    alert("Please enter a time.");
+                    return;
+                }
+
+                var timestamp = Date.parse(date + " " + time)/1000;
+                if (timestamp === undefined || timestamp === "") timestamp = 0;
+                var user = firebase.auth().currentUser;
+
+                database.collection("users").doc(user.uid).collection("todo").doc(taskID).set({
+                    title: title,
+                    date: date,
+                    time: time,
+                    description: description,
+                    timestamp: timestamp
+                }).then(function() {
+                    document.getElementsByClassName("modal-list")[0].innerHTML = "";
+                    location.reload();
+                }).catch(function(error) {
+                    console.log("Error: " + error);
+                });
+            }
+
+            function editTask(clickedID) {
+                var taskID = clickedID.slice(5);
+                var userID = firebase.auth().currentUser.uid;
+                var date, time, description, timestamp, title;
+                document.getElementById("modal").style.display = "block";
+                database.collection("users").doc(userID).collection("todo").doc(taskID).get().then(function(doc) {
+                    if (doc.exists) {
+                        date = doc.data().date;
+                        description = doc.data().description;
+                        time = doc.data().time;
+                        title = doc.data().title; 
+                        titleArr = title.split(" "); // Ensures the displayed title includes words after spaces
+
+                        var info = `<label for=title>Title</label>
+                                    <input type=text id=title name=title placeholder='Enter a title' value=${titleArr.join("&nbsp;")}><br>
+                                    <label for=date>Date</label>
+                                    <input type=date id=date name=date placeholder='Enter a date' value=${date}><br>
+                                    <label for=time>Time</label>
+                                    <input type=time id=time name=time placeholder='Enter a time' value=${time}><br>
+                                    <label for=description>Description</label>
+                                    <textarea id=description name=description placeholder='Enter a description' value=${description}></textarea><br>
+                                    <button id=revise onclick="revise( '${taskID}' )">Revise</button>`;
+
+                        document.getElementsByClassName("modal-list")[0].innerHTML = info;
+                    }
+                })
             }
 
             function completeTask(clickedID) {
@@ -238,9 +352,7 @@
                         }).then(function() {
                             database.collection("users").doc(userID).collection("todo").doc(taskID).delete().then(function() {
                                 console.log("Successfully deleted document");
-                                document.getElementById(taskID).addEventListener("click", function() {
-                                    this.closest('li').remove();
-                                });
+                                document.getElementById(taskID).style.display = "none";
                             }).catch(function(error) {
                                 console.log("Error removing document: ", error);
                             });

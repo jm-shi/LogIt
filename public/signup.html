@@ -84,10 +84,6 @@
           }
 
         function addToDatabase(user, email) {
-          /*  database.collection("users").doc(email).collection("tasks").doc("ASD").set({
-                test: "testing"
-            })*/
-
             database.collection("users").doc(user.uid).set({
                 email: email
             }).then(function() {
