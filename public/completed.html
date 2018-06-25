@@ -4,8 +4,8 @@
     <head>
         <meta charset=UTF-8>
         <meta name=viewport content="width=device-width, initial-scale=1, minimum-scale=1">
-        <meta name=description content="LogIt Home">
-        <title>Home</title>
+        <meta name=description content="LogIt Completed Tasks">
+        <title>Completed Tasks</title>
         <style>
             * {
                 font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
@@ -80,16 +80,20 @@
                 padding: 10px;
                 font-size: 20px;
                 color: #fff;
-                width: 70px;
+                width: 80px;
                 height: 58px;
                 -webkit-appearance: none;
                 -webkit-border-radius: 0;
             }
+
             .edit {
                 background-color: #190533;
             }
             .done {
                 background-color: #1E9912;
+            }
+            .delete {
+                background-color: #992912;
             }
         </style>
     </head>
@@ -106,13 +110,13 @@
 
         <div id=sidebar>
             <ul>
-                <li id=todo style="color: #D8124E">Todo</li>
-                <li id=completed>Completed</li>
+                <li id=todo>Todo</li>
+                <li id=completed style="color:#D8124E">Completed</li>
                 <li id=signout>Logout</li>
             </ul>
         </div>
 
-        <h1>Tasks to Complete</h1>
+        <h1>Tasks Completed</h1>
 
         <ul id=list>
         </ul>
@@ -130,28 +134,15 @@
    
             firebase.auth().onAuthStateChanged(function(user) {
                 if (user) {
-                    database.collection("users").doc(user.uid).collection("todo").orderBy("timestamp").get()
+                    database.collection("users").doc(user.uid).collection("completed").orderBy("timestamp").get()
                     .then(snapshot => {
                         snapshot.forEach(doc => {
-                            /*console.log("Date: " + doc.data().date);
-                            console.log("Description: " + doc.data().description);
-                            console.log("Title: " + doc.data().title);
-                            console.log("Timestamp: " + doc.data().timestamp);*/
-                            
-                            var date = doc.data().date; //new Date(doc.data().date);
-                            if (date) {
-                                //date = getDateString(date);
-                            }
-                            
+                            var date = doc.data().date; 
                             var task = `<li id=${doc.id}>` + "<span style='float:left; font-weight: bold'>" + doc.data().title + "</span><span style='float:right'>"  
                                 + `<button id='edit_${doc.id}' class='task edit' onclick='editTask(this.id)'>Edit</button>`  
-                                + `<button id='done_${doc.id}' class='task done' onclick='completeTask(this.id)'>Done</button>` 
+                                + `<button id='delete_${doc.id}' class='task delete' onclick='deleteTask(this.id)'>Delete</button>` 
                                 + "</span>" + `<br><span style='font-size: 18px'>${date}` + "</span></li>";
                             document.getElementById("list").innerHTML += task;
-                            /*var ul = document.getElementById("list");
-                            var li = document.createElement("li");
-                            li.appendChild(document.createTextNode(doc.data().title));
-                            ul.appendChild(li);*/
                             console.log(doc.id, '=>', doc.data());
                         });
                     })
@@ -164,7 +155,7 @@
                 }
             });
 
-            function getDateString(date) {
+            /*function getDateString(date) {
                 var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
                 var monthString = months[date.getMonth()];
                 var dateString = monthString + " " + date.getDay() + ", " + date.getFullYear();
@@ -178,19 +169,13 @@
                 var timeString = hours + ":" + minutes + " " + period;
 
                 return dateString + " at " + timeString;
-            }
+            }*/
 
             window.onload = function() {
                 document.getElementById("signout").addEventListener("click", logout);
                 document.getElementById("createbtn").addEventListener("click", createTask);
                 document.getElementById("hamburger").addEventListener("click", toggleSidebar);
-                document.getElementById("completed").addEventListener("click", viewCompleted)
-
-
-                /*var doneButtons = document.getElementsByClassName("done");
-                for (var i=0; i<doneButtons.length; i++) {
-                    doneButtons[i].addEventListener("click", completeTask);
-                }*/
+                document.getElementById("todo").addEventListener("click", viewTodo);
             }
 
             function logout() {
@@ -209,8 +194,8 @@
                 document.getElementById("sidebar").classList.toggle("active");
             }
 
-            function viewCompleted() {
-                window.location.href = "completed.html";
+            function viewTodo() {
+                window.location.href = "home.html";
             }
 
             function editTask(clickedID) {
@@ -220,32 +205,17 @@
                 console.log(clickedID);
             }
 
-            function completeTask(clickedID) {
-                var taskID = clickedID.slice(5);
+            function deleteTask(clickedID) {
+                var taskID = clickedID.slice(7);
                 var userID = firebase.auth().currentUser.uid;
-                var date, description, timestamp, title;
-                database.collection("users").doc(userID).collection("todo").doc(taskID).get().then(function(doc) {
-                    if (doc.exists) {
-                        date = doc.data().date;
-                        description = doc.data().description;
-                        timestamp = doc.data().timestamp;
-                        title = doc.data().title;
-                        database.collection("users").doc(userID).collection("completed").doc(taskID).set({
-                            date: date,
-                            description: description,
-                            timestamp: timestamp,
-                            title: title
-                        }).then(function() {
-                            database.collection("users").doc(userID).collection("todo").doc(taskID).delete().then(function() {
-                                console.log("Successfully deleted document");
-                                document.getElementById(taskID).addEventListener("click", function() {
-                                    this.closest('li').remove();
-                                });
-                            }).catch(function(error) {
-                                console.log("Error removing document: ", error);
-                            });
-                        });
-                    }
+                database.collection("users").doc(userID).collection("completed").doc(taskID).delete()
+                .then(function() {
+                    console.log("Successfully deleted document");
+                    document.getElementById(taskID).addEventListener("click", function() {
+                        this.closest('li').remove();
+                    });
+                }).catch(function(error) {
+                    console.log("Error removing document: ", error);
                 });
             }
 
