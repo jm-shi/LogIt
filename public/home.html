@@ -6,133 +6,8 @@
         <meta name=viewport content="width=device-width, initial-scale=1, minimum-scale=1">
         <meta name=description content="LogIt Home">
         <title>Home</title>
-        <style>
-            * {
-                font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-                margin: 0;
-                padding: 0;
-            }
-            html {
-                background-color: #e0e2eb;
-            }
-            h1 {
-                text-align: center;
-                font-size: 2em;
-                padding: 10px;
-                background-color: #a3a8c2;
-            }
-            .topnav {
-                position: relative;
-                background-color: #000066;
-                height: 60px;
-                overflow: hidden;
-            }
-            #createbtn {
-                position: absolute;
-                top: 50%;
-                transform: translateY(-50%);
-                right: 10px;
-                padding: 10px;
-                font-size: 20px;
-                background-color: #fff;
-                -webkit-appearance: none;
-                -webkit-border-radius: 0;
-            }
-            #sidebar {
-                height: 100%;
-                width: 100%;
-                position: fixed;
-                background-color: #111c31;
-                font-size: 2em;
-                margin-right: 200px;
-                left: -100%;
-                transition: 0.1s linear;
-                opacity: 0.95;
-            }
-            #sidebar.active {
-                left: 0px;
-            }
-            #sidebar ul li {
-                color: #afafaf;
-                list-style: none;
-                padding: 15px 50px 15px 15px;
-            }
-            #sidebar ul li:hover {
-                color: #fff;
-            }
-            #hamburger {
-                position: absolute;
-                padding: 15px 20px;
-            }
-            #hamburger span {
-                display: block;
-                width: 30px;
-                height: 3px;
-                background-color: #fff;
-                margin: 5px 0px;
-            }
-            #list li {
-                padding: 15px;
-                font-size:1.5em;
-                background-color: #e0e2eb; /* #a3a8c2; */
-                border-bottom: solid 1px #a3a8c2;
-            }
-          /*  #list li:nth-child(odd) {
-                background-color: #e0e2eb;
-            }*/
-            .task {
-                padding: 10px;
-                font-size: 20px;
-                color: #fff;
-                width: 70px;
-                height: 58px;
-                -webkit-appearance: none;
-                -webkit-border-radius: 0;
-            }
-            .edit {
-                background-color: #190533;
-            }
-            .done {
-                background-color: #1E9912;
-            }
-            .close {
-                float: right;
-                font-size: 1em;
-            }
-            .close:hover {
-                cursor: pointer;
-            }
-            #modal {
-                display: none;
-                position: fixed;
-                z-index: 1;
-                width: 100%;
-                height: 100%;
-                background-color: #000;
-                opacity: 0.95;
-                overflow: auto;
-            }
-            .modal-header {
-                text-align: center;
-                font-size: 2em;
-                font-weight: bold;
-                background-color: #a3a8c2;
-                box-sizing: border-box;
-                -moz-box-sizing: border-box;
-                padding: 5%;
-                margin: 5% auto;
-                width: 100%;
-            }
-            .modal-content {
-                background-color: #fff;
-                margin: 5% auto;
-                width: 80%;
-            }
-            .modal-list {
-                list-style-type: none;
-            }
-        </style>
-        <link rel="stylesheet" type="text/css" href="form.css">
+        <link rel="stylesheet" type="text/css" href="css/base.css">
+
     </head>
     <body>
 
@@ -170,7 +45,8 @@
         <script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-app.js"></script>
         <script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-auth.js"></script>
         <script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-firestore.js"></script>
-        <script src="app.js"></script>
+        <script src="js/app.js"></script>
+        <script src="js/main.js"></script>
 
         <script>
             var database = firebase.firestore();
@@ -194,15 +70,10 @@
                          //   }
                             
                             var task = `<li id=${doc.id}>` + "<span style='float:left; font-weight: bold'>" + doc.data().title + "</span><span style='float:right'>"  
-                                + `<button id='edit_${doc.id}' class='task edit' onclick='editTask(this.id)'>Edit</button>`  
-                                + `<button id='done_${doc.id}' class='task done' onclick='completeTask(this.id)'>Done</button>` 
+                                + `<button id='edit_${doc.id}' class='task edit' onclick='editTask(this.id, "todo")'>Edit</button>`  
+                                + `<button id='done_${doc.id}' class='task done' onclick='completeTask(this.id, "todo")'>Done</button>` 
                                 + "</span>" + `<br><span style='font-size: 18px'>${date}` + "</span></li>";
                             document.getElementById("list").innerHTML += task;
-                            /*var ul = document.getElementById("list");
-                            var li = document.createElement("li");
-                            li.appendChild(document.createTextNode(doc.data().title));
-                            ul.appendChild(li);*/
-                            console.log(doc.id, '=>', doc.data());
                         });
                     })
                     .catch(err => {
@@ -214,7 +85,7 @@
                 }
             });
 
-            function getDateString(date) {
+      /*      function getDateString(date) {
                 var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
                 var monthString = months[date.getMonth()];
                 var dateString = monthString + " " + date.getDay() + ", " + date.getFullYear();
@@ -229,8 +100,8 @@
 
                 return dateString + " at " + timeString;
             }
-
-            window.onload = function() {
+*/
+  /*          window.onload = function() {
                 document.getElementById("signout").addEventListener("click", logout);
                 document.getElementById("createbtn").addEventListener("click", createTask);
                 document.getElementById("hamburger").addEventListener("click", toggleSidebar);
@@ -327,7 +198,7 @@
                                     <input type=time id=time name=time placeholder='Enter a time' value=${time}><br>
                                     <label for=description>Description</label>
                                     <textarea id=description name=description placeholder='Enter a description' value=${description}></textarea><br>
-                                    <button id=revise onclick="revise( '${taskID}' )">Revise</button>`;
+                                    <button id=revise onclick="revise( '${taskID}','todo' )">Revise</button>`;
 
                         document.getElementsByClassName("modal-list")[0].innerHTML = info;
                     }
@@ -359,8 +230,9 @@
                         });
                     }
                 });
-            }
+            }*/
 
         </script>
+        <noscript>JavaScript not enabled</noscript>
     </body>
 </html>
