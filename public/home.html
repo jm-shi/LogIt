@@ -11,13 +11,20 @@
     </head>
     <body>
 
-        <div id="modal">
-            <div class="modal-content">
-                <div class="modal-header">Edit Task<span class="close">&times;</span></div>
-                
+        <div class=modal>
+            <div class=modal-content>
+                <div class=modal-header>Edit Task<span class=close>&times;</span></div>
                 <ul class=modal-list>
                 </ul>
             </div>
+        </div>
+
+        <div class=modal>
+                <div class=modal-content>
+                    <div class=modal-header>Create Task<span class=close>&times;</span></div>
+                    <ul class=modal-list>
+                    </ul>
+                </div>
         </div>
 
         <div class=topnav>
@@ -59,19 +66,10 @@
                     database.collection("users").doc(user.uid).collection("todo").orderBy("timestamp").get()
                     .then(snapshot => {
                         snapshot.forEach(doc => {
-                            /*console.log("Date: " + doc.data().date);
-                            console.log("Description: " + doc.data().description);
-                            console.log("Title: " + doc.data().title);
-                            console.log("Timestamp: " + doc.data().timestamp);*/
-                            
-                            var date = doc.data().date + " " + doc.data().time; //+ doc.data().time; //new Date(doc.data().date);
-                          //  if (date) {
-                           //     date = getDateString(new Date(date));
-                         //   }
-                            
+                            var date = doc.data().date + " " + doc.data().time; 
                             var task = `<li id=${doc.id}>` + "<span style='float:left; font-weight: bold'>" + doc.data().title + "</span><span style='float:right'>"  
-                                + `<button id='edit_${doc.id}' class='task edit' onclick='editTask(this.id, "todo")'>Edit</button>`  
-                                + `<button id='done_${doc.id}' class='task done' onclick='completeTask(this.id, "todo")'>Done</button>` 
+                                + `<button id='edit_${doc.id}' class='task edit' onclick='displayEditScreen(this.id, "todo")'>Edit</button>`  
+                                + `<button id='done_${doc.id}' class='task done' onclick='completeTask(this.id)'>Done</button>` 
                                 + "</span>" + `<br><span style='font-size: 18px'>${date}` + "</span></li>";
                             document.getElementById("list").innerHTML += task;
                         });
@@ -84,153 +82,6 @@
                     window.location.href = "index.html";
                 }
             });
-
-      /*      function getDateString(date) {
-                var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-                var monthString = months[date.getMonth()];
-                var dateString = monthString + " " + date.getDay() + ", " + date.getFullYear();
-
-                var hours = date.getHours();
-                var period = (hours < 12) ? "AM" : "PM";
-                hours = hours % 12;
-                hours = hours ? hours : 12;
-                var minutes = date.getMinutes();
-                minutes = (minutes < 10) ? "0"+minutes : minutes;
-                var timeString = hours + ":" + minutes + " " + period;
-
-                return dateString + " at " + timeString;
-            }
-*/
-  /*          window.onload = function() {
-                document.getElementById("signout").addEventListener("click", logout);
-                document.getElementById("createbtn").addEventListener("click", createTask);
-                document.getElementById("hamburger").addEventListener("click", toggleSidebar);
-                document.getElementById("completed").addEventListener("click", viewCompleted);
-                document.getElementsByClassName("close")[0].addEventListener("click", close);
-                window.addEventListener("click", closeOutside);
-            }
-
-            function logout() {
-                firebase.auth().signOut().then(function() {
-                    window.location.href = "index.html";
-                }).catch(function(error) {
-                    alert(error);
-                });
-            }
-
-            function createTask() {
-                window.location.href = "createTask.html";
-            }
-
-            function toggleSidebar() {
-                document.getElementById("sidebar").classList.toggle("active");
-            }
-
-            function viewCompleted() {
-                window.location.href = "completed.html";
-            }
-
-            function close() {
-                document.getElementById("modal").style.display = "none";
-            }
-
-            function closeOutside(e) {
-                if (e.target === modal) {
-                    document.getElementById("modal").style.display = "none";
-                }
-            }
-
-            function revise(taskID) {
-                var title = document.getElementById("title").value;
-                var date = document.getElementById("date").value;
-                var time = document.getElementById("time").value;
-                var description = document.getElementById("description").value;
-                
-                if (title === "") {
-                    alert("Please enter a title.");
-                    return;
-                }
-                if (date === "") {
-                    alert("Please enter a date.");
-                    return;
-                }
-                if (time === "") {
-                    alert("Please enter a time.");
-                    return;
-                }
-
-                var timestamp = Date.parse(date + " " + time)/1000;
-                if (timestamp === undefined || timestamp === "") timestamp = 0;
-                var user = firebase.auth().currentUser;
-
-                database.collection("users").doc(user.uid).collection("todo").doc(taskID).set({
-                    title: title,
-                    date: date,
-                    time: time,
-                    description: description,
-                    timestamp: timestamp
-                }).then(function() {
-                    document.getElementsByClassName("modal-list")[0].innerHTML = "";
-                    location.reload();
-                }).catch(function(error) {
-                    console.log("Error: " + error);
-                });
-            }
-
-            function editTask(clickedID) {
-                var taskID = clickedID.slice(5);
-                var userID = firebase.auth().currentUser.uid;
-                var date, time, description, timestamp, title;
-                document.getElementById("modal").style.display = "block";
-                database.collection("users").doc(userID).collection("todo").doc(taskID).get().then(function(doc) {
-                    if (doc.exists) {
-                        date = doc.data().date;
-                        description = doc.data().description;
-                        time = doc.data().time;
-                        title = doc.data().title; 
-                        titleArr = title.split(" "); // Ensures the displayed title includes words after spaces
-
-                        var info = `<label for=title>Title</label>
-                                    <input type=text id=title name=title placeholder='Enter a title' value=${titleArr.join("&nbsp;")}><br>
-                                    <label for=date>Date</label>
-                                    <input type=date id=date name=date placeholder='Enter a date' value=${date}><br>
-                                    <label for=time>Time</label>
-                                    <input type=time id=time name=time placeholder='Enter a time' value=${time}><br>
-                                    <label for=description>Description</label>
-                                    <textarea id=description name=description placeholder='Enter a description' value=${description}></textarea><br>
-                                    <button id=revise onclick="revise( '${taskID}','todo' )">Revise</button>`;
-
-                        document.getElementsByClassName("modal-list")[0].innerHTML = info;
-                    }
-                })
-            }
-
-            function completeTask(clickedID) {
-                var taskID = clickedID.slice(5);
-                var userID = firebase.auth().currentUser.uid;
-                var date, description, timestamp, title;
-                database.collection("users").doc(userID).collection("todo").doc(taskID).get().then(function(doc) {
-                    if (doc.exists) {
-                        date = doc.data().date;
-                        description = doc.data().description;
-                        timestamp = doc.data().timestamp;
-                        title = doc.data().title;
-                        database.collection("users").doc(userID).collection("completed").doc(taskID).set({
-                            date: date,
-                            description: description,
-                            timestamp: timestamp,
-                            title: title
-                        }).then(function() {
-                            database.collection("users").doc(userID).collection("todo").doc(taskID).delete().then(function() {
-                                console.log("Successfully deleted document");
-                                document.getElementById(taskID).style.display = "none";
-                            }).catch(function(error) {
-                                console.log("Error removing document: ", error);
-                            });
-                        });
-                    }
-                });
-            }*/
 
         </script>
         <noscript>JavaScript not enabled</noscript>
