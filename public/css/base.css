@@ -81,7 +81,7 @@ h1 {
     background-color: #190533;
 }
 .done {
-    background-color: #1E9912;
+    background-color: #A76613; 
 }
 .delete {
     background-color: #992912;
@@ -90,7 +90,7 @@ h1 {
     background-color: #3407B4;
 }
 .done:hover {
-    background-color: #06C917;
+    background-color: #1E9912;
 }
 .delete:hover {
     background-color: #EC1E06;
@@ -131,7 +131,6 @@ textarea {
     -webkit-appearance: none;
     -webkit-border-radius: 0;
 }
-
 #revise:hover,
 #create:hover {
     background-color: #000066;
@@ -182,4 +181,19 @@ textarea {
 }
 .modal-list {
     list-style-type: none;
+}
+#trash {
+    float: left;
+}
+#trash:hover {
+    cursor: pointer;
+}
+.wrap-container {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: space-between;
+}  
+.wrap-container div:last-child {
+    margin-left: auto;
 }

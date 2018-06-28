@@ -105,26 +105,29 @@ function displayCreateScreen() {
 }
 
 function completeTask(clickedID) {
-    var taskID = clickedID.slice(5);
+    if (!confirm("Mark task as complete?")) return;
+   var taskID = clickedID.slice(5);
     var userID = firebase.auth().currentUser.uid;
-    var date, description, timestamp, title;
+    var date, time, description, timestamp, title;
     database.collection("users").doc(userID).collection("todo").doc(taskID).get().then(function(doc) {
         if (doc.exists) {
             date = doc.data().date;
+            time = doc.data().time;
             description = doc.data().description;
             timestamp = doc.data().timestamp;
             title = doc.data().title;
             database.collection("users").doc(userID).collection("completed").doc(taskID).set({
                 date: date,
+                time: time,
                 description: description,
                 timestamp: timestamp,
                 title: title
             }).then(function() {
                 database.collection("users").doc(userID).collection("todo").doc(taskID).delete().then(function() {
-                    console.log("Successfully deleted document");
+                    console.log("Successfully moved document to completed section");
                     document.getElementById(taskID).style.display = "none";
                 }).catch(function(error) {
-                    console.log("Error removing document: ", error);
+                    console.log("Error moving document: ", error);
                 });
             });
         }
@@ -151,21 +154,25 @@ function displayEditScreen(clickedID, type) {
                         <label for=time>Time</label>
                         <input type=time id=time name=time placeholder='Enter a time' value=${time}><br>
                         <label for=description>Description</label>
-                        <textarea id=description name=description placeholder='Enter a description' value=${description}></textarea><br>
+                        <textarea id=description name=description placeholder='Enter a description'>${description}</textarea><br>
                         <button id=revise onclick="revise( '${taskID}', '${type}', false )">Revise</button>`;
+            var trashIcon = `<img onclick="deleteTask('${taskID}', '${type}', true)" src=trash.png alt=Delete>`;
 
             document.getElementsByClassName("modal-list")[0].innerHTML = info;
+            document.getElementById("trash").innerHTML = trashIcon;
         }
     })
 }
 
-function deleteTask(clickedID, type) {
-    var taskID = clickedID.slice(5);
+function deleteTask(clickedID, type, inModal) {
+    if (!confirm("Delete this task?")) return;
+    var taskID = (inModal) ? clickedID : clickedID.slice(5);
     var userID = firebase.auth().currentUser.uid;
     database.collection("users").doc(userID).collection(type).doc(taskID).delete()
     .then(function() {
         console.log("Successfully deleted document");
         document.getElementById(taskID).style.display = "none";
+        if (inModal) close();
     }).catch(function(error) {
         console.log("Error removing document: ", error);
     });
