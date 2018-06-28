@@ -182,10 +182,10 @@ textarea {
 .modal-list {
     list-style-type: none;
 }
-#trash {
+.trash {
     float: left;
 }
-#trash:hover {
+.trash:hover {
     cursor: pointer;
 }
 .wrap-container {

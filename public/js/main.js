@@ -68,6 +68,7 @@ function revise(taskID, type, createNewTask) {
         }).then(function() {
             document.getElementsByClassName("modal-list")[0].innerHTML = "";
             location.reload();
+            
         }).catch(function(error) {
             console.log("Error: " + error);
         });
@@ -89,24 +90,24 @@ function revise(taskID, type, createNewTask) {
 }
 
 function displayCreateScreen() {
-    document.getElementsByClassName("modal")[1].style.display = "block";
+    document.getElementsByClassName("modal")[0].style.display = "block";
 
     var info = `<label for=title>Title</label>
-    <input type=text id=title name=title placeholder='Enter a title'><br>
+    <input type=text id=title name=title placeholder='Enter a title' value=''><br>
     <label for=date>Date</label>
-    <input type=date id=date name=date placeholder='Enter a date'><br>
+    <input type=date id=date name=date placeholder='Enter a date' value=''><br>
     <label for=time>Time</label>
-    <input type=time id=time name=time placeholder='Enter a time'><br>
+    <input type=time id=time name=time placeholder='Enter a time' value=''><br>
     <label for=description>Description</label>
     <textarea id=description name=description placeholder='Enter a description'></textarea><br>
     <button id='create' onclick="revise( '', 'todo', true )">Create</button>`;
 
-    document.getElementsByClassName("modal-list")[1].innerHTML = info;
+    document.getElementsByClassName("modal-list")[0].innerHTML = info;
 }
 
 function completeTask(clickedID) {
     if (!confirm("Mark task as complete?")) return;
-   var taskID = clickedID.slice(5);
+    var taskID = clickedID.slice(5);
     var userID = firebase.auth().currentUser.uid;
     var date, time, description, timestamp, title;
     database.collection("users").doc(userID).collection("todo").doc(taskID).get().then(function(doc) {
@@ -156,10 +157,10 @@ function displayEditScreen(clickedID, type) {
                         <label for=description>Description</label>
                         <textarea id=description name=description placeholder='Enter a description'>${description}</textarea><br>
                         <button id=revise onclick="revise( '${taskID}', '${type}', false )">Revise</button>`;
-            var trashIcon = `<img onclick="deleteTask('${taskID}', '${type}', true)" src=trash.png alt=Delete>`;
+            var trashIcon = `<img onclick="deleteTask('${taskID}', '${type}', true)" src=images/trash.png alt=Delete>`;
 
             document.getElementsByClassName("modal-list")[0].innerHTML = info;
-            document.getElementById("trash").innerHTML = trashIcon;
+            document.getElementsByClassName("trash")[0].innerHTML = trashIcon;
         }
     })
 }
@@ -171,7 +172,9 @@ function deleteTask(clickedID, type, inModal) {
     database.collection("users").doc(userID).collection(type).doc(taskID).delete()
     .then(function() {
         console.log("Successfully deleted document");
-        document.getElementById(taskID).style.display = "none";
+        var task = document.getElementById(taskID);
+        task.parentNode.removeChild(task);
+        //document.getElementById(taskID).style.display = "none";
         if (inModal) close();
     }).catch(function(error) {
         console.log("Error removing document: ", error);
