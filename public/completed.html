@@ -5,7 +5,12 @@
         <meta charset=UTF-8>
         <meta name=viewport content="width=device-width, initial-scale=1, minimum-scale=1">
         <meta name=description content="LogIt Completed Tasks">
+        <meta name=theme-color content=#190533>
+
         <title>Completed Tasks</title>
+        
+        <link rel=manifest href=manifest.json>
+        <link rel=canonical href=https://logitcalendar.firebaseapp.com/completed.html>
         <link rel=stylesheet type=text/css href=css/base.css>
 
     </head>
@@ -84,6 +89,13 @@
                     window.location.href = "index.html";
                 }
             });
+        </script>
+        <script>
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('/sw.js');
+                });
+            }
         </script>
         <noscript>JavaScript not enabled</noscript>
     </body>

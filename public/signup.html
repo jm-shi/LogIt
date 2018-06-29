@@ -4,8 +4,13 @@
         <meta charset=UTF-8>
         <meta name=viewport content="width=device-width, initial-scale=1, minimum-scale=1">
         <meta name=description content="LogIt Signup">
+        <meta name=theme-color content=#190533>
+
         <title>Sign Up</title>
-        <link rel=preload href=css/authentication.css as=style>
+        
+        <link rel=manifest href=manifest.json>
+        <link rel=canonical href=https://logitcalendar.firebaseapp.com/signup.html>
+        <link rel=stylesheet type=text/css href=css/authentication.css>
 
         <style>
             body {
@@ -81,6 +86,13 @@
                 window.alert("The passwords do not match.");
             }
         }
+        </script>
+        <script>
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('/sw.js');
+                });
+            }
         </script>
         <noscript>JavaScript not enabled</noscript>
     </body>

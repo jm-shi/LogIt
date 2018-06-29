@@ -1,4 +1,5 @@
 .firebaserc
+build
 node_modules/
 package.json
 public/firebase-debug.log

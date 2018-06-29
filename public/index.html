@@ -5,10 +5,13 @@
         <meta charset=UTF-8>
         <meta name=viewport content="width=device-width, initial-scale=1, minimum-scale=1">
         <meta name=description content="LogIt Login">
+        <meta name=theme-color content=#190533>
 
         <title>LogIt</title>
-        <link rel="canonical" href="index.html">
-        <link rel="stylesheet" type="text/css" href="css/authentication.css">
+        
+        <link rel=manifest href=manifest.json>
+        <link rel=canonical href=https://logitcalendar.firebaseapp.com>
+        <link rel=stylesheet type=text/css href=css/authentication.css>
 
         <style>
             h1 {
@@ -59,6 +62,13 @@
             } 
           });          
 
+        </script>
+        <script>
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('/sw.js');
+                });
+            }
         </script>
         <noscript>JavaScript not enabled</noscript>
     </body>

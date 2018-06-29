@@ -5,7 +5,12 @@
         <meta charset=UTF-8>
         <meta name=viewport content="width=device-width, initial-scale=1, minimum-scale=1">
         <meta name=description content="LogIt Home">
+        <meta name=theme-color content=#190533>
+
         <title>Home</title>
+        
+        <link rel=manifest href=manifest.json>
+        <link rel=canonical href=https://logitcalendar.firebaseapp.com/home.html>
         <link rel=stylesheet type=text/css href=css/base.css>
     </head>
     <body>
@@ -87,6 +92,13 @@
                 }
             });
 
+        </script>
+        <script>
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('/sw.js');
+                });
+            }
         </script>
         <noscript>JavaScript not enabled</noscript>
     </body>
