@@ -1,10 +1,11 @@
 window.onload = function() {
     document.getElementById("signout").addEventListener("click", logout);
-    document.getElementById("createbtn").addEventListener("click", displayCreateScreen);
     document.getElementById("hamburger").addEventListener("click", toggleSidebar);
+    document.getElementById("createbtn").addEventListener("click", displayCreateScreen);
 
     document.getElementsByClassName("close")[0].addEventListener("click", close);
     document.getElementsByClassName("close")[1].addEventListener("click", close);
+    document.getElementsByClassName("close")[2].addEventListener("click", close);
     window.addEventListener("click", closeOutside);
 
     (document.getElementById("todo") !== undefined) ? document.getElementById("todo").addEventListener("click", viewTodo) : "";
@@ -26,13 +27,11 @@ function toggleSidebar() {
 function close() {
     document.getElementsByClassName("modal")[0].style.display = "none";
     document.getElementsByClassName("modal")[1].style.display = "none";
+    document.getElementsByClassName("modal")[2].style.display = "none";
 }
 
 function closeOutside(e) {
-    if (e.target.className === "modal") {
-        document.getElementsByClassName("modal")[0].style.display = "none";
-        document.getElementsByClassName("modal")[1].style.display = "none";
-    }
+    if (e.target.className === "modal") close();
 }
 
 function viewTodo() {
@@ -89,8 +88,63 @@ function revise(taskID, type, createNewTask) {
     }
 }
 
-function displayCreateScreen() {
+function displayViewScreen(clickedID, type) {
+    var taskID = clickedID.slice(5);
+    var userID = firebase.auth().currentUser.uid;
+    var date, time, description, timestamp, title;
+
     document.getElementsByClassName("modal")[0].style.display = "block";
+    database.collection("users").doc(userID).collection(type).doc(taskID).get().then(function(doc) {
+        if (doc.exists) {
+            date = doc.data().date;
+            description = doc.data().description;
+            time = doc.data().time;
+            title = doc.data().title; 
+            titleArr = title.split(" "); // Ensures the displayed title includes words after spaces
+
+            var info = `<h2 class=view-info>Title: ${titleArr.join("&nbsp;")}</h2><br>
+                        <h2 class=view-info>Date: ${date}</h2><br>
+                        <h2 class=view-info>Time: ${time}</h2><br>
+                        <h2 class=view-info bottom-view>Description: ${description}</h2><br>
+                        <button disabled id=view style="color:#a3a8c2">View</button>`;
+            
+            document.getElementsByClassName("modal-list")[0].innerHTML = info;
+        }
+    })
+}
+
+function displayEditScreen(clickedID, type) {
+    var taskID = clickedID.slice(5);
+    var userID = firebase.auth().currentUser.uid;
+    var date, time, description, timestamp, title;
+    document.getElementsByClassName("modal")[1].style.display = "block";
+    database.collection("users").doc(userID).collection(type).doc(taskID).get().then(function(doc) {
+        if (doc.exists) {
+            date = doc.data().date;
+            description = doc.data().description;
+            time = doc.data().time;
+            title = doc.data().title; 
+            titleArr = title.split(" "); // Ensures the displayed title includes words after spaces
+
+            var info = `<label for=title>Title</label>
+                        <input type=text id=title name=title placeholder='Enter a title' value=${titleArr.join("&nbsp;")}><br>
+                        <label for=date>Date</label>
+                        <input type=date id=date name=date placeholder='Enter a date' value=${date}><br>
+                        <label for=time>Time</label>
+                        <input type=time id=time name=time placeholder='Enter a time' value=${time}><br>
+                        <label for=description>Description</label>
+                        <textarea id=description name=description placeholder='Enter a description'>${description}</textarea><br>
+                        <button id=revise onclick="revise( '${taskID}', '${type}', false )">Revise</button>`;
+            var trashIcon = `<img onclick="deleteTask('${taskID}', '${type}', true)" src=images/trash.png alt=Delete>`;
+
+            document.getElementsByClassName("modal-list")[1].innerHTML = info;
+            document.getElementsByClassName("trash")[1].innerHTML = trashIcon;
+        }
+    })
+}
+
+function displayCreateScreen() {
+    document.getElementsByClassName("modal")[2].style.display = "block";
 
     var info = `<label for=title>Title</label>
     <input type=text id=title name=title placeholder='Enter a title' value=''><br>
@@ -102,7 +156,7 @@ function displayCreateScreen() {
     <textarea id=description name=description placeholder='Enter a description'></textarea><br>
     <button id='create' onclick="revise( '', 'todo', true )">Create</button>`;
 
-    document.getElementsByClassName("modal-list")[0].innerHTML = info;
+    document.getElementsByClassName("modal-list")[2].innerHTML = info;
 }
 
 function completeTask(clickedID) {
@@ -133,36 +187,6 @@ function completeTask(clickedID) {
             });
         }
     });
-}
-
-function displayEditScreen(clickedID, type) {
-    var taskID = clickedID.slice(5);
-    var userID = firebase.auth().currentUser.uid;
-    var date, time, description, timestamp, title;
-    document.getElementsByClassName("modal")[0].style.display = "block";
-    database.collection("users").doc(userID).collection(type).doc(taskID).get().then(function(doc) {
-        if (doc.exists) {
-            date = doc.data().date;
-            description = doc.data().description;
-            time = doc.data().time;
-            title = doc.data().title; 
-            titleArr = title.split(" "); // Ensures the displayed title includes words after spaces
-
-            var info = `<label for=title>Title</label>
-                        <input type=text id=title name=title placeholder='Enter a title' value=${titleArr.join("&nbsp;")}><br>
-                        <label for=date>Date</label>
-                        <input type=date id=date name=date placeholder='Enter a date' value=${date}><br>
-                        <label for=time>Time</label>
-                        <input type=time id=time name=time placeholder='Enter a time' value=${time}><br>
-                        <label for=description>Description</label>
-                        <textarea id=description name=description placeholder='Enter a description'>${description}</textarea><br>
-                        <button id=revise onclick="revise( '${taskID}', '${type}', false )">Revise</button>`;
-            var trashIcon = `<img onclick="deleteTask('${taskID}', '${type}', true)" src=images/trash.png alt=Delete>`;
-
-            document.getElementsByClassName("modal-list")[0].innerHTML = info;
-            document.getElementsByClassName("trash")[0].innerHTML = trashIcon;
-        }
-    })
 }
 
 function deleteTask(clickedID, type, inModal) {

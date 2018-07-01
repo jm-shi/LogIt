@@ -8,12 +8,20 @@
         <meta name=theme-color content=#190533>
 
         <title>Home</title>
-        
+
         <link rel=manifest href=manifest.json>
         <link rel=canonical href=https://logitcalendar.firebaseapp.com/home.html>
         <link rel=stylesheet type=text/css href=css/base.css>
     </head>
     <body>
+
+        <div class=modal>
+            <div class=modal-content>
+                <div class=modal-header>View Task<span class=close>&times;</span></div>
+                <ul class=modal-list>
+                </ul>
+            </div>
+        </div>    
 
         <div class=modal>
             <div class=modal-content>
@@ -62,12 +70,8 @@
         <script src=js/app.js></script>
         <script src=js/main.js></script>
 
-        <script>
-            var database = firebase.firestore();
-            firebase.firestore().settings({
-                timestampsInSnapshots: true
-            });
-   
+        <script>   
+        var database = firebase.firestore();
             firebase.auth().onAuthStateChanged(function(user) {
                 if (user) {
                     database.collection("users").doc(user.uid).collection("todo").orderBy("timestamp").get()
@@ -76,7 +80,7 @@
                             var date = doc.data().date + " " + doc.data().time; 
                             var task = `<li id=${doc.id}>` 
                                 + `<div class=wrap-container>
-                                    <div><span style='font-weight:bold'>${doc.data().title}</span><br><span style='font-size:18px'>${date}</span></div>`
+                                    <div><span id='view_${doc.id}' onclick='displayViewScreen(this.id, "todo")' style='font-weight:bold'>${doc.data().title}</span><br><span style='font-size:18px'>${date}</span></div>`
                                 + `<div><button id='edit_${doc.id}' class='task edit' onclick='displayEditScreen(this.id, "todo")'>Edit</button>`
                                 + `<button id='done_${doc.id}' class='task done' onclick='completeTask(this.id)'>□</button>` 
                                 + `</div></div>`;

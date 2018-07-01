@@ -6,11 +6,7 @@ if (workbox) {
   workbox.precaching.precacheAndRoute([
   {
     "url": "completed.html",
-    "revision": "e615be4a4e28bab7975a21def234779f"
-  },
-  {
-    "url": "createTask.html",
-    "revision": "94cf30d68b02665c643e12ae52803c4a"
+    "revision": "1f206ef2f67941d4119430634bfacb43"
   },
   {
     "url": "css/authentication.css",
@@ -22,7 +18,19 @@ if (workbox) {
   },
   {
     "url": "home.html",
-    "revision": "384413a4ffc4059caf3781db92ac0f08"
+    "revision": "56c5f898028f2acf62b5c82874043a9f"
+  },
+  {
+    "url": "images/L_192x192.png",
+    "revision": "255e04d7fcfab59192d362d87ab4ca58"
+  },
+  {
+    "url": "images/L_48x48.png",
+    "revision": "a8d674393b62a7b98dbaf92b720e2f9b"
+  },
+  {
+    "url": "images/L_512x512.png",
+    "revision": "0460d1677a7ce713f843a83903f9e9cf"
   },
   {
     "url": "images/trash.png",
@@ -30,7 +38,7 @@ if (workbox) {
   },
   {
     "url": "index.html",
-    "revision": "c7ae6d7b6e9be2ab861ae5060c8026f3"
+    "revision": "ecc29eb4b81fd06e542c3af68a686c01"
   },
   {
     "url": "js/app.js",
@@ -42,7 +50,7 @@ if (workbox) {
   },
   {
     "url": "signup.html",
-    "revision": "86a7e754e98a7c6a09964c894f08ac04"
+    "revision": "c359a3403bffb7cc5b240a077d07eb4c"
   }
 ]);
 

@@ -122,7 +122,8 @@ textarea {
     max-width: 95%;
 }
 #revise,
-#create {
+#create,
+#view {
     width: 100%;
     font-size: 2em;
     font-weight: bold;
@@ -196,4 +197,8 @@ textarea {
 }  
 .wrap-container div:last-child {
     margin-left: auto;
+}
+.view-info {
+    padding: 10px;
+    font-weight: normal;
 }

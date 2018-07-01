@@ -7,3 +7,12 @@ var config = {
     messagingSenderId: "843432594890"
 };
 firebase.initializeApp(config);
+
+firebase.firestore().settings({
+    timestampsInSnapshots: true
+});
+
+firebase.firestore().enablePersistence()
+    .catch(function(err) {
+        console.log(err);
+    }); 
