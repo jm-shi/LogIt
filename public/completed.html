@@ -26,7 +26,7 @@
 
         <div class=modal>
             <div class=modal-content>
-                <div class=modal-header><span id=trash></span>Edit Task<span class=close>&times;</span></div>      
+                <div class=modal-header><span class=trash></span>Edit Task<span class=close>&times;</span></div>      
                 <ul class=modal-list>
                 </ul>
             </div>
@@ -97,7 +97,7 @@
         <script>
             if ('serviceWorker' in navigator) {
                 window.addEventListener('load', () => {
-                    navigator.serviceWorker.register('/sw.js');
+                    navigator.serviceWorker.register('js/sw.js');
                 });
             }
         </script>
