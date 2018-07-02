@@ -11,7 +11,7 @@
 
         <link rel=manifest href=manifest.json>
         <link rel=canonical href=https://logitcalendar.firebaseapp.com>
-        <link rel=stylesheet type=text/css href=css/authentication.css>
+        <link rel=stylesheet type=text/css href=css/authentication.min.css>
 
         <style>
             h1 {
@@ -35,13 +35,13 @@
             <input type=password id=password name=password placeholder="Enter your password" required><br><br>
 
             <button id=signin>Sign In</button><br>
-            <div id=bottomText>Don't have an account? <a href=signup.html>Sign up</a></div>
+            <div id=bottomText>Don't have an account? <a href=signup.min.html>Sign up</a></div>
         </div>
 
         <script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-app.js"></script>
         <script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-auth.js"></script>
         <script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-firestore.js"></script>
-        <script src="js/app.js"></script>
+        <script src="js/app.min.js"></script>
 
         <script>    
           window.onload = function() {
@@ -58,7 +58,7 @@
 
           firebase.auth().onAuthStateChanged(function(user) {
             if (user) {
-                window.location.href = "home.html";
+                window.location.href = "home.min.html";
             } 
           });          
 
@@ -66,7 +66,7 @@
         <script>
             if ('serviceWorker' in navigator) {
                 window.addEventListener('load', () => {
-                    navigator.serviceWorker.register('js/sw.js');
+                    navigator.serviceWorker.register('js/sw.min.js');
                 });
             }
         </script>

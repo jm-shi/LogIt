@@ -1,6 +1,6 @@
 function logout() {
     firebase.auth().signOut().then(function() {
-        window.location.href = "index.html";
+        window.location.href = "index.min.html";
     }).catch(function(error) {
         alert(error);
     });
@@ -25,11 +25,11 @@ function closeOutside(e) {
 }
 
 function viewTodo() {
-    window.location.href = "home.html";
+    window.location.href = "home.min.html";
 }
 
 function viewCompleted() {
-    window.location.href = "completed.html";
+    window.location.href = "completed.min.html";
 }
 
 function revise(taskID, type, createNewTask) {
@@ -89,7 +89,7 @@ function displayViewScreen(clickedID, type) {
             description = doc.data().description;
             time = doc.data().time;
             title = doc.data().title; 
-            titleArr = title.split(" "); // Ensures the displayed title includes words after spaces
+            titleArr = title.split(" "); /* Ensures the displayed title includes words after spaces */
 
             var info = `<h2 class=view-info>Title: ${titleArr.join("&nbsp;")}</h2><br>
                         <h2 class=view-info>Date: ${date}</h2><br>
