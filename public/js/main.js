@@ -1,17 +1,3 @@
-window.onload = function() {
-    document.getElementById("signout").addEventListener("click", logout);
-    document.getElementById("hamburger").addEventListener("click", toggleSidebar);
-    document.getElementById("createbtn").addEventListener("click", displayCreateScreen);
-
-    document.getElementsByClassName("close")[0].addEventListener("click", close);
-    document.getElementsByClassName("close")[1].addEventListener("click", close);
-    document.getElementsByClassName("close")[2].addEventListener("click", close);
-    window.addEventListener("click", closeOutside);
-
-    (document.getElementById("todo") !== undefined) ? document.getElementById("todo").addEventListener("click", viewTodo) : "";
-    (document.getElementById("completed") !== undefined) ? document.getElementById("completed").addEventListener("click", viewCompleted) : "";
-}
-
 function logout() {
     firebase.auth().signOut().then(function() {
         window.location.href = "index.html";
@@ -25,6 +11,10 @@ function toggleSidebar() {
 }
 
 function close() {
+    document.getElementsByClassName("modal-list")[0].innerHTML = "";
+    document.getElementsByClassName("modal-list")[1].innerHTML = "";
+    document.getElementsByClassName("modal-list")[2].innerHTML = "";
+    document.getElementsByClassName("trash")[0].innerHTML = ""; 
     document.getElementsByClassName("modal")[0].style.display = "none";
     document.getElementsByClassName("modal")[1].style.display = "none";
     document.getElementsByClassName("modal")[2].style.display = "none";
@@ -71,8 +61,7 @@ function revise(taskID, type, createNewTask) {
         }).catch(function(error) {
             console.log("Error: " + error);
         });
-    }
-    else {
+    } else {
         database.collection("users").doc(user.uid).collection("todo").doc().set({
             title: title,
             date: date,
@@ -110,7 +99,134 @@ function displayViewScreen(clickedID, type) {
             
             document.getElementsByClassName("modal-list")[0].innerHTML = info;
         }
-    })
+    });
+}
+
+var modalElements = {
+    titleLabel: null,
+    titleInput: null,
+    dateLabel: null,
+    dateInput: null,
+    timeLabel: null,
+    timeInput: null,
+    descriptionLabel: null,
+    descriptionTextArea: null,
+    createButton: null,
+    reviseButton: null,
+    trashIcon: null,
+    lineBreak: null
+};
+
+var view = {
+    createTitleElems: function() {
+        var titleLabel = document.createElement("label");
+        titleLabel.setAttribute("for", "title");
+        var titleText = document.createTextNode("Title");
+        titleLabel.appendChild(titleText);
+        var titleInput = document.createElement("input");
+        titleInput.setAttribute("type", "text");
+        titleInput.setAttribute("id", "title");
+        titleInput.setAttribute("placeholder", "Enter a title");
+        modalElements.titleLabel = titleLabel;
+        modalElements.titleInput = titleInput;
+    },
+    createDateElems: function() {
+        var dateLabel = document.createElement("label");
+        dateLabel.setAttribute("for", "date");
+        var dateText = document.createTextNode("Date");
+        dateLabel.appendChild(dateText);
+        var dateInput = document.createElement("input");
+        dateInput.setAttribute("type", "date");
+        dateInput.setAttribute("id", "date");
+        dateInput.setAttribute("placeholder", "Enter a date");
+        modalElements.dateLabel = dateLabel;
+        modalElements.dateInput = dateInput;
+    },
+    createTimeElems: function() {
+        var timeLabel = document.createElement("label");
+        timeLabel.setAttribute("for", "time");
+        var timeText = document.createTextNode("Time");
+        timeLabel.appendChild(timeText);
+        var timeInput = document.createElement("input");
+        timeInput.setAttribute("type", "time");
+        timeInput.setAttribute("id", "time");
+        timeInput.setAttribute("placeholder", "Enter a time");
+        modalElements.timeLabel = timeLabel;
+        modalElements.timeInput = timeInput;
+    },
+    createDescriptionElems: function() {
+        var descriptionLabel = document.createElement("label");
+        descriptionLabel.setAttribute("for", "description");
+        var descriptionText = document.createTextNode("Description");
+        descriptionLabel.appendChild(descriptionText);
+        var descriptionTextArea = document.createElement("textarea");
+        descriptionTextArea.setAttribute("id", "description");
+        descriptionTextArea.setAttribute("placeholder", "Enter a description");
+        modalElements.descriptionLabel = descriptionLabel;
+        modalElements.descriptionTextArea = descriptionTextArea;
+    },
+    createTrashIcon: function() {
+        var trashIcon = document.createElement("img");
+        trashIcon.setAttribute("src", "images/trash.png");
+        trashIcon.setAttribute("alt", "Delete");
+        trashIcon.onclick = function() {
+            deleteTask(taskID, type, true);
+        };
+        modalElements.trashIcon = trashIcon;
+    },
+    createLineBreak: function() {
+        var lineBreak = document.createElement("br");
+        modalElements.lineBreak = lineBreak;
+    },
+    createCreateButton: function() {
+        var createButton = document.createElement("button");
+        createButton.setAttribute("id", "create");
+        createButton.onclick = function() { revise("", "todo", true); };
+        createButtonText = document.createTextNode("Create");
+        createButton.appendChild(createButtonText);
+        modalElements.createButton = createButton;
+    },
+    createReviseButton: function(taskID, type) {
+        var reviseButton = document.createElement("button");
+        reviseButton.setAttribute("id", "revise");
+        reviseButton.onclick = function() { revise(taskID, type, false); };
+        reviseButtonText = document.createTextNode("Revise");
+        reviseButton.appendChild(reviseButtonText);
+        modalElements.reviseButton = reviseButton;
+    },
+};
+
+function createElements(taskID, type) {
+    view.createTitleElems();
+    view.createDateElems();
+    view.createTimeElems();
+    view.createDescriptionElems();
+    view.createTrashIcon();
+    view.createLineBreak();
+    if (taskID === "") {
+        view.createCreateButton();
+    } else {
+        view.createReviseButton(taskID, type);
+    }
+}
+
+function updateDOM(i) {
+    document.getElementsByClassName("modal-list")[i].appendChild(modalElements.titleLabel);
+    document.getElementsByClassName("modal-list")[i].appendChild(modalElements.titleInput);
+    document.getElementsByClassName("modal-list")[i].appendChild(modalElements.dateLabel);
+    document.getElementsByClassName("modal-list")[i].appendChild(modalElements.dateInput);
+    document.getElementsByClassName("modal-list")[i].appendChild(modalElements.timeLabel);
+    document.getElementsByClassName("modal-list")[i].appendChild(modalElements.timeInput);
+    document.getElementsByClassName("modal-list")[i].appendChild(modalElements.descriptionLabel);
+    document.getElementsByClassName("modal-list")[i].appendChild(modalElements.descriptionTextArea);
+    document.getElementsByClassName("modal-list")[i].appendChild(modalElements.lineBreak);
+    
+    if (i === 1) { 
+        document.getElementsByClassName("trash")[0].appendChild(modalElements.trashIcon);
+        document.getElementsByClassName("modal-list")[i].appendChild(modalElements.reviseButton);
+    } else {
+        document.getElementsByClassName("modal-list")[i].appendChild(modalElements.createButton);   
+    }
 }
 
 function displayEditScreen(clickedID, type) {
@@ -124,39 +240,22 @@ function displayEditScreen(clickedID, type) {
             description = doc.data().description;
             time = doc.data().time;
             title = doc.data().title; 
-            titleArr = title.split(" "); // Ensures the displayed title includes words after spaces
-
-            var info = `<label for=title>Title</label>
-                        <input type=text id=title name=title placeholder='Enter a title' value=${titleArr.join("&nbsp;")}><br>
-                        <label for=date>Date</label>
-                        <input type=date id=date name=date placeholder='Enter a date' value=${date}><br>
-                        <label for=time>Time</label>
-                        <input type=time id=time name=time placeholder='Enter a time' value=${time}><br>
-                        <label for=description>Description</label>
-                        <textarea id=description name=description placeholder='Enter a description'>${description}</textarea><br>
-                        <button id=revise onclick="revise( '${taskID}', '${type}', false )">Revise</button>`;
-            var trashIcon = `<img onclick="deleteTask('${taskID}', '${type}', true)" src=images/trash.png alt=Delete>`;
-
-            document.getElementsByClassName("modal-list")[1].innerHTML = info;
-            document.getElementsByClassName("trash")[1].innerHTML = trashIcon;
+        
+            createElements(taskID, type);
+            modalElements.titleInput.setAttribute("value", title);  
+            modalElements.dateInput.setAttribute("value", date);
+            modalElements.timeInput.setAttribute("value", time);
+            modalElements.descriptionTextArea.setAttribute("value", description);
+            
+            updateDOM(1);
         }
-    })
+    });
 }
 
 function displayCreateScreen() {
     document.getElementsByClassName("modal")[2].style.display = "block";
-
-    var info = `<label for=title>Title</label>
-    <input type=text id=title name=title placeholder='Enter a title' value=''><br>
-    <label for=date>Date</label>
-    <input type=date id=date name=date placeholder='Enter a date' value=''><br>
-    <label for=time>Time</label>
-    <input type=time id=time name=time placeholder='Enter a time' value=''><br>
-    <label for=description>Description</label>
-    <textarea id=description name=description placeholder='Enter a description'></textarea><br>
-    <button id='create' onclick="revise( '', 'todo', true )">Create</button>`;
-
-    document.getElementsByClassName("modal-list")[2].innerHTML = info;
+    createElements("","");
+    updateDOM(2);
 }
 
 function completeTask(clickedID) {
@@ -189,18 +288,31 @@ function completeTask(clickedID) {
     });
 }
 
-function deleteTask(clickedID, type, inModal) {
+function deleteTask(clickedID, collectionType, inModal) {
     if (!confirm("Delete this task?")) return;
+
     var taskID = (inModal) ? clickedID : clickedID.slice(5);
     var userID = firebase.auth().currentUser.uid;
-    database.collection("users").doc(userID).collection(type).doc(taskID).delete()
+    database.collection("users").doc(userID).collection(collectionType).doc(taskID).delete()
     .then(function() {
         console.log("Successfully deleted document");
-        var task = document.getElementById(taskID);
-        task.parentNode.removeChild(task);
-        //document.getElementById(taskID).style.display = "none";
+        document.getElementById(taskID).style.display = "none";
         if (inModal) close();
     }).catch(function(error) {
         console.log("Error removing document: ", error);
     });
+}
+
+window.onload = function() {
+    document.getElementById("signout").addEventListener("click", logout);
+    document.getElementById("hamburger").addEventListener("click", toggleSidebar);
+    document.getElementById("createbtn").addEventListener("click", displayCreateScreen);
+
+    document.getElementsByClassName("close")[0].addEventListener("click", close);
+    document.getElementsByClassName("close")[1].addEventListener("click", close);
+    document.getElementsByClassName("close")[2].addEventListener("click", close);
+    window.addEventListener("click", closeOutside);
+
+    (document.getElementById("todo") !== undefined) ? document.getElementById("todo").addEventListener("click", viewTodo) : "";
+    (document.getElementById("completed") !== undefined) ? document.getElementById("completed").addEventListener("click", viewCompleted) : "";
 }
