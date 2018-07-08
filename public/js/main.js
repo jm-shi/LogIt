@@ -165,7 +165,11 @@ var view = {
         modalElements.descriptionLabel = descriptionLabel;
         modalElements.descriptionTextArea = descriptionTextArea;
     },
-    createTrashIcon: function() {
+    createLineBreak: function() {
+        var lineBreak = document.createElement("br");
+        modalElements.lineBreak = lineBreak;
+    },
+    createTrashIcon: function(taskID, type) {
         var trashIcon = document.createElement("img");
         trashIcon.setAttribute("src", "images/trash.png");
         trashIcon.setAttribute("alt", "Delete");
@@ -173,10 +177,6 @@ var view = {
             deleteTask(taskID, type, true);
         };
         modalElements.trashIcon = trashIcon;
-    },
-    createLineBreak: function() {
-        var lineBreak = document.createElement("br");
-        modalElements.lineBreak = lineBreak;
     },
     createCreateButton: function() {
         var createButton = document.createElement("button");
@@ -201,8 +201,8 @@ function createElements(taskID, type) {
     view.createDateElems();
     view.createTimeElems();
     view.createDescriptionElems();
-    view.createTrashIcon();
     view.createLineBreak();
+    view.createTrashIcon(taskID, type);
     if (taskID === "") {
         view.createCreateButton();
     } else {
