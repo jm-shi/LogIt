@@ -80,7 +80,7 @@ function revise(taskID, type, createNewTask) {
 function displayViewScreen(clickedID, type) {
     var taskID = clickedID.slice(5);
     var userID = firebase.auth().currentUser.uid;
-    var date, time, description, timestamp, title;
+    var date, time, description, title;
 
     document.getElementsByClassName("modal")[0].style.display = "block";
     database.collection("users").doc(userID).collection(type).doc(taskID).get().then(function(doc) {
@@ -91,10 +91,19 @@ function displayViewScreen(clickedID, type) {
             title = doc.data().title; 
             titleArr = title.split(" "); /* Ensures the displayed title includes words after spaces */
 
-            var info = `<h2 class=view-info>Title: ${titleArr.join("&nbsp;")}</h2><br>
-                        <h2 class=view-info>Date: ${date}</h2><br>
-                        <h2 class=view-info>Time: ${time}</h2><br>
-                        <h2 class=view-info bottom-view>Description: ${description}</h2><br>
+            var info = `<h2 class=view-info>
+                            <span class=header>Title: </span>
+                            ${titleArr.join("&nbsp;")}</h2><br>
+                        <h2 class=view-info>
+                            <span class=header>Date: </span>
+                            ${date}</h2><br>
+                        <h2 class=view-info>
+                            <span class=header>Time: </span>
+                            ${time}</h2><br>
+                        ${description === "" ? "" : 
+                        `<h2 class=view-info bottom-view>    
+                            <span class=header>Description: </span>
+                            ${description}</h2><br>`}
                         <button disabled id=view style="color:#a3a8c2">View</button>`;
             
             document.getElementsByClassName("modal-list")[0].innerHTML = info;
@@ -232,7 +241,7 @@ function updateDOM(i) {
 function displayEditScreen(clickedID, type) {
     var taskID = clickedID.slice(5);
     var userID = firebase.auth().currentUser.uid;
-    var date, time, description, timestamp, title;
+    var date, time, description, title;
     document.getElementsByClassName("modal")[1].style.display = "block";
     database.collection("users").doc(userID).collection(type).doc(taskID).get().then(function(doc) {
         if (doc.exists) {
