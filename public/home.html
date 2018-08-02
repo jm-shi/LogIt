@@ -1,88 +1,95 @@
 <!doctype html>
 
 <html lang=en>
-    <head>
-        <meta charset=UTF-8>
-        <meta name=viewport content="width=device-width, initial-scale=1, minimum-scale=1">
-        <meta name=description content="LogIt Home">
-        <meta name=theme-color content=#190533>
 
-        <title>Home</title>
+<head>
+    <meta charset=UTF-8>
+    <meta name=viewport content="width=device-width, initial-scale=1, minimum-scale=1">
+    <meta name=description content="LogIt Home">
+    <meta name=theme-color content=#190533>
 
-        <link rel=manifest href=manifest.json>
-        <link rel=canonical href=https://logitcalendar.firebaseapp.com/home.html>
-        <link rel=stylesheet type=text/css href=css/base.min.css>
-    </head>
-    <body>
+    <title>Home</title>
 
-        <div class=modal>
-            <div class=modal-content>
-                <div class=modal-header>View Task<span class=close>&times;</span></div>
-                <ul class=modal-list>
-                </ul>
+    <link rel=manifest href=manifest.json>
+    <link rel=canonical href=https://logitcalendar.firebaseapp.com/home.html>
+    <link rel=stylesheet type=text/css href=css/base.min.css>
+</head>
+
+<body>
+
+    <div class=modal>
+        <div class=modal-content>
+            <div class=modal-header>View Task
+                <span class=close>&times;</span>
             </div>
-        </div>    
-
-        <div class=modal>
-            <div class=modal-content>
-                <div class=modal-header>
-                    <span class=trash></span>
-                    Edit Task
-                    <span class=close>&times;</span></div>
-                <ul class=modal-list>
-                </ul>
-            </div>
-        </div>
-
-        <div class=modal>
-                <div class=modal-content>
-                    <div class=modal-header>Create Task<span class=close>&times;</span></div>
-                    <ul class=modal-list>
-                    </ul>
-                </div>
-        </div>
-
-        <div class=topnav>
-            <div id=hamburger>
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-            <button id=createbtn>Create Task</button>
-        </div>
-
-        <div id=sidebar>
-            <ul>
-                <li id=todo style="color: #D8124E">Todo</li>
-                <li id=completed>Completed</li>
-                <li id=signout>Logout</li>
+            <ul class=modal-list>
             </ul>
         </div>
+    </div>
 
-        <h1>Tasks to Complete</h1>
+    <div class=modal>
+        <div class=modal-content>
+            <div class=modal-header>
+                <span class=trash></span>
+                Edit Task
+                <span class=close>&times;</span>
+            </div>
+            <ul class=modal-list>
+            </ul>
+        </div>
+    </div>
 
-        <ul id=list>
+    <div class=modal>
+        <div class=modal-content>
+            <div class=modal-header>Create Task
+                <span class=close>&times;</span>
+            </div>
+            <ul class=modal-list>
+            </ul>
+        </div>
+    </div>
+
+    <div class=topnav>
+        <div id=hamburger>
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <button id=createbtn>Create Task</button>
+    </div>
+
+    <div id=sidebar>
+        <ul>
+            <li id=todo style="color: #D8124E">Todo</li>
+            <li id=completed>Completed</li>
+            <li id=signout>Logout</li>
         </ul>
+    </div>
 
-        <script src=https://www.gstatic.com/firebasejs/5.0.4/firebase-app.js></script>
-        <script src=https://www.gstatic.com/firebasejs/5.0.4/firebase-auth.js></script>
-        <script src=https://www.gstatic.com/firebasejs/5.0.4/firebase-firestore.js></script>
-        <script src=js/app.min.js></script>
-        <script src=js/main.min.js></script>
+    <h1>Tasks to Complete</h1>
 
-        <script>   
+    <ul id=list>
+    </ul>
+
+    <script src=https://www.gstatic.com/firebasejs/5.0.4/firebase-app.js></script>
+    <script src=https://www.gstatic.com/firebasejs/5.0.4/firebase-auth.js></script>
+    <script src=https://www.gstatic.com/firebasejs/5.0.4/firebase-firestore.js></script>
+    <script src=js/app.min.js></script>
+    <script src=js/main.min.js></script>
+
+    <script>   
         var database = firebase.firestore();
-            firebase.auth().onAuthStateChanged(function(user) {
-                if (user) {
-                    database.collection("users").doc(user.uid).collection("todo").orderBy("timestamp").get()
+        firebase.auth().onAuthStateChanged(function (user) {
+            if (user) {
+                database.collection("users").doc(user.uid).collection("todo").orderBy("timestamp").get()
                     .then(snapshot => {
                         snapshot.forEach(doc => {
-                            var date = doc.data().date + " " + doc.data().time; 
-                            var task = `<li id=${doc.id}>` 
+                            var date = doc.data().date + " " + doc.data().time;
+                            var task = `<li id=${doc.id}>`
                                 + `<div class=wrap-container>
                                     <div><span id='view_${doc.id}' onclick='displayViewScreen(this.id, "todo")' style='font-weight:bold'>${doc.data().title}</span><br><span style='font-size:18px'>${date}</span></div>`
                                 + `<div><button id='edit_${doc.id}' class='task edit' onclick='displayEditScreen(this.id, "todo")'>Edit</button>`
-                                + `<button id='done_${doc.id}' class='task done' onclick='completeTask(this.id)'>□</button>` 
+                                + `<button id='done_${doc.id}' class='task done' onclick='completeTask(this.id)'>□</button>`
                                 + `</div></div>`;
                             document.getElementById("list").innerHTML += task;
                         });
@@ -90,20 +97,21 @@
                     .catch(err => {
                         console.log("Error getting documents ", err);
                     });
-                }
-                else {
-                    window.location.href = "index.min.html";
-                }
-            });
-
-        </script>
-        <script>
-            if ('serviceWorker' in navigator) {
-                window.addEventListener('load', () => {
-                    navigator.serviceWorker.register('js/sw.min.js');
-                });
             }
-        </script>
-        <noscript>JavaScript not enabled</noscript>
-    </body>
+            else {
+                window.location.href = "index.min.html";
+            }
+        });
+
+    </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('js/sw.min.js');
+            });
+        }
+    </script>
+    <noscript>JavaScript not enabled</noscript>
+</body>
+
 </html>
