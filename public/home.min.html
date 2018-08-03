@@ -4,7 +4,7 @@
                 database.collection("users").doc(user.uid).collection("todo").orderBy("timestamp").get()
                     .then(snapshot => {
                         snapshot.forEach(doc => {
-                            var date = doc.data().date + " " + doc.data().time;
+                            var date = formatDate(doc.data().date) + " " + formatTime(doc.data().time);
                             var task = `<li id=${doc.id}>`
                                 + `<div class=wrap-container>
                                     <div><span id='view_${doc.id}' onclick='displayViewScreen(this.id, "todo")' style='font-weight:bold'>${doc.data().title}</span><br><span style='font-size:18px'>${date}</span></div>`

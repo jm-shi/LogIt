@@ -1,28 +1,28 @@
-<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1"><meta name="description" content="LogIt Completed Tasks"><meta name="theme-color" content="#190533"><title>Completed Tasks</title><link rel="manifest" href="manifest.json"><link rel="canonical" href="https://logitcalendar.firebaseapp.com/completed.html"><link rel="stylesheet" type="text/css" href="css/base.min.css"></head><body><div class="modal"><div class="modal-content"><div class="modal-header">View Task<span class="close">&times;</span></div><ul class="modal-list"></ul></div></div><div class="modal"><div class="modal-content"><div class="modal-header"><span class="trash"></span>Edit Task<span class="close">&times;</span></div><ul class="modal-list"></ul></div></div><div class="modal"><div class="modal-content"><div class="modal-header">Create Task<span class="close">&times;</span></div><ul class="modal-list"></ul></div></div><div class="topnav"><div id="hamburger"><span></span> <span></span> <span></span></div><button id="createbtn">Create Task</button></div><div id="sidebar"><ul><li id="todo">Todo</li><li id="completed" style="color:#d8124e">Completed</li><li id="signout">Logout</li></ul></div><h1>Tasks Completed</h1><ul id="list"></ul><script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-app.js"></script><script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-auth.js"></script><script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-firestore.js"></script><script src="js/app.min.js"></script><script src="js/main.min.js"></script><script>var database = firebase.firestore();
-            firebase.auth().onAuthStateChanged(function(user) {
-                if (user) {
-                    database.collection("users").doc(user.uid).collection("completed").orderBy("timestamp").get()
+<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1"><meta name="description" content="LogIt Completed Tasks"><meta name="theme-color" content="#190533"><title>Completed Tasks</title><link rel="manifest" href="manifest.json"><link rel="canonical" href="https://logitcalendar.firebaseapp.com/completed.html"><link rel="stylesheet" type="text/css" href="css/base.min.css"></head><body><div class="modal"><div class="modal-content"><div class="modal-header">View Task <span class="close">&times;</span></div><ul class="modal-list"></ul></div></div><div class="modal"><div class="modal-content"><div class="modal-header"><span class="trash"></span>Edit Task <span class="close">&times;</span></div><ul class="modal-list"></ul></div></div><div class="modal"><div class="modal-content"><div class="modal-header">Create Task <span class="close">&times;</span></div><ul class="modal-list"></ul></div></div><div class="topnav"><div id="hamburger"><span></span> <span></span> <span></span></div><button id="createbtn">Create Task</button></div><div id="sidebar"><ul><li id="todo">Todo</li><li id="completed" style="color:#d8124e">Completed</li><li id="signout">Logout</li></ul></div><h1>Tasks Completed</h1><ul id="list"></ul><script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-app.js"></script><script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-auth.js"></script><script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-firestore.js"></script><script src="js/app.min.js"></script><script src="js/main.min.js"></script><script>var database = firebase.firestore();
+        firebase.auth().onAuthStateChanged(function (user) {
+            if (user) {
+                database.collection("users").doc(user.uid).collection("completed").orderBy("timestamp").get()
                     .then(snapshot => {
                         snapshot.forEach(doc => {
-                            var date = doc.data().date + " " + doc.data().time; 
-                            var task = `<li id=${doc.id}>` 
+                            var date = formatDate(doc.data().date) + " " + formatTime(doc.data().time);
+                            var task = `<li id=${doc.id}>`
                                 + `<div class=wrap-container>
                                     <div><span id='view_${doc.id}' onclick='displayViewScreen(this.id, "completed")' style='font-weight:bold'>${doc.data().title}</span><br><span style='font-size:18px'>${date}</span></div>`
                                 + `<div><button id='edit_${doc.id}' class='task edit' onclick='displayEditScreen(this.id,"completed")'>Edit</button>`
-                                + `<button id='dele_${doc.id}' class='task delete' onclick='deleteTask(this.id,"completed",false)'>&times;</button>` 
+                                + `<button id='dele_${doc.id}' class='task delete' onclick='deleteTask(this.id,"completed",false)'>&times;</button>`
                                 + `</div></div>`;
                             document.getElementById("list").innerHTML += task;
-                        }); 
+                        });
                     })
                     .catch(err => {
                         console.log("Error getting documents ", err);
                     });
-                }
-                else {
-                    window.location.href = "index.min.html";
-                }
-            });</script><script>if ('serviceWorker' in navigator) {
-                window.addEventListener('load', () => {
-                    navigator.serviceWorker.register('js/sw.min.js');
-                });
-            }</script><noscript>JavaScript not enabled</noscript></body></html>
+            }
+            else {
+                window.location.href = "index.min.html";
+            }
+        });</script><script>if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('js/sw.min.js');
+            });
+        }</script><noscript>JavaScript not enabled</noscript></body></html>

@@ -1,3 +1,37 @@
+const months = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December'
+];
+
+function formatTime(time) {
+  let hour = time.substring(0, 2);
+  const minute = time.substring(3, 5);
+  const meridiem = hour < 12 ? 'am' : 'pm';
+  hour = hour == 0 ? 12 : hour;
+  hour = hour < 10 ? hour.slice(1, 2) : hour;
+  hour = meridiem === 'pm' ? hour % 12 : hour;
+  return `${hour}:${minute} ${meridiem}`;
+}
+
+function formatDate(date) {
+  let month = date.substring(5, 7);
+  let day = date.substring(8, 10);
+  const year = date.substring(0, 4);
+  month = month < 10 ? month.slice(1, 2) : month;
+  day = day < 10 ? day.slice(1, 2) : day;
+  return `${months[month - 1]} ${day}, ${year}`;
+}
+
 function logout() {
   firebase
     .auth()
@@ -108,9 +142,9 @@ function displayViewScreen(clickedID, type) {
     .get()
     .then(function(doc) {
       if (doc.exists) {
-        date = doc.data().date;
+        date = formatDate(doc.data().date);
         description = doc.data().description;
-        time = doc.data().time;
+        time = formatTime(doc.data().time);
         title = doc.data().title;
         titleArr = title.split(
           ' '
