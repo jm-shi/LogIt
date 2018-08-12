@@ -190,6 +190,10 @@ function displayEditScreen(clickedID, type) {
         description = doc.data().description;
         time = doc.data().time;
         title = doc.data().title;
+        titleArr = title.split(
+          ' '
+        ); /* Ensures the displayed title includes words after spaces */
+
         trashIcon = `
           <img
             src='images/trash.png'
@@ -198,7 +202,9 @@ function displayEditScreen(clickedID, type) {
           />`;
 
         var info = `<label for=title>Title</label>
-                    <input type=text id=title name=title placeholder='Enter a title' value=${title}
+                    <input type=text id=title name=title placeholder='Enter a title' value=${titleArr.join(
+                      '&nbsp;'
+                    )}
                     )}><br>
                     <label for=date>Date</label>
                     <input type=date id=date name=date placeholder='Enter a date' value=${date}><br>
